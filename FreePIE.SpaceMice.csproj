@@ -1,0 +1,31 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="testapp\**" />
+    <EmbeddedResource Remove="testapp\**" />
+    <None Remove="testapp\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="FreePIE.Core.Contracts">
+      <HintPath>..\..\Stuff\FreePIE\FreePIE_src\FreePIE.Core.Contracts\bin\Debug\FreePIE.Core.Contracts.dll</HintPath>
+    </Reference>
+    <Reference Include="TDx.TDxInput">
+      <HintPath>3DX\TDx.TDxInput.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="3DX\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="HidSharp" Version="2.1.0" />
+    <PackageReference Include="System.Numerics.Vectors" Version="4.6.1" />
+  </ItemGroup>
+
+</Project>

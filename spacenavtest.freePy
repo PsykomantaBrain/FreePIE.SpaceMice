@@ -1,0 +1,9 @@
+
+diagnostics.watch(spacemouse.x)
+diagnostics.watch(spacemouse.y)
+diagnostics.watch(spacemouse.z)
+
+diagnostics.watch(spacemouse.pitch)
+diagnostics.watch(spacemouse.yaw)
+diagnostics.watch(spacemouse.roll)
+
