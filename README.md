@@ -26,8 +26,10 @@ You can read any of the spacemouse's 6 axes as shown. You can then use those for
 
 All values range from 0 to +/-350. 
 
-For driving a vJoy device, you can scale the values like this:
-![image](https://github.com/user-attachments/assets/d18158fe-2306-4996-a7da-904e2f79d968)
+For driving a vJoy device, you can scale the values like this: 
+
+![image](https://github.com/user-attachments/assets/a852a57e-52a0-4782-8c5c-9e2419380b16)
+
 
 
 # Other 3Dx Devices
