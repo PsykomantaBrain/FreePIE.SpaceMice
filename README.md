@@ -5,7 +5,7 @@ A [FreePIE plugin](https://github.com/AndersMalmgren/FreePIE) for reading the 3D
 
 Currently the plugin targets the SpaceMouse Pro device specifically `V: 0x046D P: 0xC62B`. I have a SpaceNavigator as well, which I will probably add support for as well.
 
-Support currently only includes pulling the six motion axes, no button reports yet, (those are contained in HID reports where the first byte is `0x03`, still need to add them)
+Support currently only includes polling the six motion axes, no button reports yet, (those are contained in HID reports where the first byte is `0x03`, still need to add them)
 
 Polling the device via HID bypasses the default 3DxWare driver completely, so configuring the device there won't have an effect on the reported values in freepie. This is necessary because the 3Dx driver only sends input to the window that is currently focused, so naturally that won't do for a FreePIE plug-in. 
 
