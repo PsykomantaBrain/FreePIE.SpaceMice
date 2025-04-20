@@ -1,5 +1,5 @@
 # FreePIE.SpaceMice
-A [FreePIE plugin](https://github.com/AndersMalmgren/FreePIE) for reading the 3DConnexion SpaceMouse device.
+A [FreePIE plugin](https://github.com/AndersMalmgren/FreePIE) for reading the 3DConnexion devices via HID.
 
 
 
