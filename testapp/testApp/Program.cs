@@ -12,7 +12,16 @@ namespace testApp
 			// Create an instance of the SpaceMouseHID class
 			try
 			{
-				SpaceMouseHID device = new SpaceMouseHID();
+				//space navigator: 0x046D, 0xC626
+				//space mouse pro: 0x046D, 0xC62B
+
+				// copilot might have been making these up. I don't have these devices to test with.
+				//space pilot: 0x046D, 0xC62D
+				//space mouse wireless: 0x046D, 0xC62A
+				//space mouse compact: 0x046D, 0xC62C
+
+
+				SpaceMiceHID device = new SpaceMiceHID();
 				if (!device.Initialize(0x046D, 0xC62B))
 				{
 					Console.WriteLine("Failed to initialize the SpaceMouse.");
@@ -31,7 +40,7 @@ namespace testApp
 
 		}
 
-		public static void Loop(SpaceMouseHID device)
+		public static void Loop(SpaceMiceHID device)
 		{
 			Console.WriteLine("Press Ctrl+C to stop");
 			Console.WriteLine("SpaceMouse data:");
@@ -40,10 +49,12 @@ namespace testApp
 			{
 				// break out on Ctrl+C
 
-				Console.WriteLine("                                                                      ");
-				Console.SetCursorPosition(0, Console.GetCursorPosition().Top - 1);
+				Console.WriteLine(string.Empty.PadRight(Console.BufferWidth, ' '));
+				Console.WriteLine(string.Empty.PadRight(Console.BufferWidth, ' '));
+				Console.SetCursorPosition(0, Console.GetCursorPosition().Top - 2);
 				Console.WriteLine($"X: {device.x}, Y: {device.y}, Z: {device.z} - Pitch: {device.pitch}, Yaw: {device.yaw}, Roll: {device.roll}");
-				Console.SetCursorPosition(0, Console.GetCursorPosition().Top - 1);
+				Console.WriteLine($"Btns: {(Convert.ToString(device.btns, 2).PadLeft(32, '0'))}");
+				Console.SetCursorPosition(0, Console.GetCursorPosition().Top - 2);
 
 
 				//device.Update();

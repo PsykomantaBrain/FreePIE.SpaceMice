@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace FreePIE.SpaceMice
 {
-	public class SpaceMouseHID
+	public class SpaceMiceHID
 	{
 
 		private HidDevice _device;
@@ -22,6 +22,8 @@ namespace FreePIE.SpaceMice
 		public double yaw;
 		public double roll;
 
+		// there are up to 4 bytes of buttons on the button report. We pack them into a single uint 32 here
+		public uint btns;
 
 		public bool Initialize(int vendorId, int productId)
 		{
@@ -38,7 +40,7 @@ namespace FreePIE.SpaceMice
 				// launch an async task to read the data in a loop
 				Task.Run(() =>
 				{
-					_stream.ReadTimeout = Timeout.Infinite; // Set to infinite timeout to avoid blocking (as long as its on a thread)
+					_stream.ReadTimeout = Timeout.Infinite;
 					while (_stream != null)
 					{
 						Update();
@@ -51,7 +53,7 @@ namespace FreePIE.SpaceMice
 			return _stream != null;
 		}
 
-		public int ReadInput()
+		private int ReadInput()
 		{
 			if (_stream == null) return 0;
 
@@ -61,7 +63,7 @@ namespace FreePIE.SpaceMice
 				bytesRead = _stream.Read(data, 0, data.Length);
 				return bytesRead;
 			}
-			catch (TimeoutException ex)
+			catch (Exception ex)
 			{
 				// this sucks, but apparently is the way to do it. If the device isn't being moved, it won't send data and reading will timeout.				
 				return 0;
@@ -69,7 +71,7 @@ namespace FreePIE.SpaceMice
 
 		}
 
-		public void Update()
+		private void Update()
 		{
 			if (_stream == null) return;
 
@@ -106,7 +108,9 @@ namespace FreePIE.SpaceMice
 
 					case 0x03: // buttons
 					{
-						// Handle button presses here
+						// bitmask 1
+						btns = (uint)(data[1] | (data[2] << 8) | (data[3] << 16) | (data[4] << 24));
+
 						break;
 					}
 				}

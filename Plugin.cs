@@ -13,7 +13,7 @@ using System.Runtime.InteropServices;
 public class TDxPlugin : IPlugin
 {
 
-	public SpaceMouseHID device;
+	public SpaceMiceHID device;
 	protected bool running;
 
 	public double x;
@@ -29,12 +29,13 @@ public class TDxPlugin : IPlugin
 	public double yaw;
 	public double roll;
 
+	public uint btns;
 
 	protected TDxPluginGlobal tdx;
 	public object CreateGlobal()
 	{
 		tdx = new TDxPluginGlobal(this);
-		device = new SpaceMouseHID();
+		device = new SpaceMiceHID();
 		return tdx;
 	}
 
@@ -45,6 +46,7 @@ public class TDxPlugin : IPlugin
 
 		x = y = z = 0;
 		pitch = yaw = roll = 0;
+		btns = 0;
 
 		return null;
 	}
@@ -74,6 +76,7 @@ public class TDxPlugin : IPlugin
 	{
 		x = y = z = 0;
 		pitch = yaw = roll = 0;
+		btns = 0;
 
 		try
 		{
@@ -115,11 +118,14 @@ public class TDxPlugin : IPlugin
 			pitch = device.pitch;
 			yaw = device.yaw;
 			roll = device.roll;
+
+			btns = device.btns;
 		}
 		else
 		{
 			x = y = z = 0;
 			pitch = yaw = roll = 0;
+			btns = 0;
 		}
 	}
 
@@ -128,6 +134,8 @@ public class TDxPlugin : IPlugin
 		running = false;
 		GC.SuppressFinalize(this);
 	}
+
+
 
 }
 
@@ -154,6 +162,7 @@ public class TDxPluginGlobal : IDisposable
 	public double yaw => tdx.yaw;
 	public double roll => tdx.roll;
 
+	public bool getButton(int btn) => (tdx.btns & (1 << btn)) != 0;
 
 	void IDisposable.Dispose()
 	{

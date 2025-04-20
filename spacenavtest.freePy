@@ -7,3 +7,10 @@ diagnostics.watch(spacemouse.pitch)
 diagnostics.watch(spacemouse.yaw)
 diagnostics.watch(spacemouse.roll)
 
+
+btn0 = -1
+for i in range(-1, 33):
+	if (spacemouse.getButton(i)):	
+		btn0 = i				
+		break;
+diagnostics.watch(btn0)
