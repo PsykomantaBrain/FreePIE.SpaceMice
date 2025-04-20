@@ -3,11 +3,14 @@ A [FreePIE plugin](https://github.com/AndersMalmgren/FreePIE) for reading the 3D
 
 
 
-Currently the plugin targets the SpaceMouse Pro device specifically `V: 0x046D P: 0xC62B`. I have a SpaceNavigator as well, which I will probably add support for as well.
+Currently the plugin targets the SpaceMouse Pro device specifically `V: 0x046D P: 0xC62B`. 
+I have tested the original SpaceNavigator as well `V: 0x046D P:0xC626`, which also worked fine.
 
-Support currently only includes polling the six motion axes, no button reports yet, (those are contained in HID reports where the first byte is `0x03`, still need to add them)
+Support currently includes polling the six motion axes, and up to 32 buttons.
 
 Polling the device via HID bypasses the default 3DxWare driver completely, so configuring the device there won't have an effect on the reported values in freepie. This is necessary because the 3Dx driver only sends input to the window that is currently focused, so naturally that won't do for a FreePIE plug-in. 
+
+Mind however, that buttons will likely be configured in the driver to do something by default, and the Plugin will read them regardless of what the driver has assigned to them. To avoid conflicts, you can either assign all buttons as `Disabled`  in the target application's (not FreePIE) 3dx profile, then use FreePIE to do your own button binding; or just bind them using the original driver itself.
 
 # Installation
 
@@ -36,7 +39,21 @@ For driving a vJoy device, you can scale the values like this:
 
 For other 3D connection devices, you should be able to adapt the SpaceMouse HID vendor/product IDs (Plugin.cs, line 54). Change them for whatever your device values are. You can find those in the windows device manager, on the driver details page.
 
-I have not tested any other devices than the SpaceMouse Pro at the moment, but I am hoping it's reasonable to assume that the data coming out of these things is the same across the different models. 
+I have not tested any other devices than the SpaceMouse Pro and original Space Navigator (wired) at the moment, but I am hoping the data coming out of these things is still formatted the same on the newer models. 
 
+Here are the VID/PID values I've been able to verify so far, as well as some others I've found (but can't validate as I don't own the devices):
+```
+// tested --------------------------------
+SpaceMouse Pro        V: 0x046D P: 0xC62B
+SpaceNavigator        V: 0x046D P: 0xC626
 
+// untested ------------------------------
+SpacePilot            V: 0x046D P: 0xC62D
+SpaceMouse Wireless   V: 0x046D P: 0xC62A
+SpaceMouse Compact:   V: 0x046D P: 0xC62C
+
+```
+
+If you can test and validate any other devices, let me know and I'll happily add them to the list. 
+(and add the option when I get around to implementing multiple device support)
 
