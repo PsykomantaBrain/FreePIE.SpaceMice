@@ -1,16 +1,36 @@
+if starting:
+	global spm0;
+	spm0 = spacemice[0]
 
-diagnostics.watch(spacemouse.x)
-diagnostics.watch(spacemouse.y)
-diagnostics.watch(spacemouse.z)
-
-diagnostics.watch(spacemouse.pitch)
-diagnostics.watch(spacemouse.yaw)
-diagnostics.watch(spacemouse.roll)
+	global spm1;
+	spm1 = spacemice[1]
 
 
+diagnostics.watch(spm0.DeviceName)
+diagnostics.watch(spm0.x)
+diagnostics.watch(spm0.y)
+diagnostics.watch(spm0.z)
+diagnostics.watch(spm0.pitch)
+diagnostics.watch(spm0.yaw)
+diagnostics.watch(spm0.roll)
 btn0 = -1
 for i in range(-1, 33):
-	if (spacemouse.getButton(i)):	
+	if (spm0.getButton(i)):	
 		btn0 = i				
 		break;
 diagnostics.watch(btn0)
+
+
+diagnostics.watch(spm1.DeviceName)
+diagnostics.watch(spm1.x)
+diagnostics.watch(spm1.y)
+diagnostics.watch(spm1.z)
+diagnostics.watch(spm1.pitch)
+diagnostics.watch(spm1.yaw)
+diagnostics.watch(spm1.roll)
+btn1 = -1
+for i in range(-1, 33):
+	if (spm1.getButton(i)):	
+		btn1 = i				
+		break;
+diagnostics.watch(btn1)

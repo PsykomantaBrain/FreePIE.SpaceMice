@@ -11,21 +11,30 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Reference Include="FreePIE.Core.Contracts">
-      <HintPath>..\..\Stuff\FreePIE\FreePIE_src\FreePIE.Core.Contracts\bin\Debug\FreePIE.Core.Contracts.dll</HintPath>
-    </Reference>
-    <Reference Include="TDx.TDxInput">
-      <HintPath>3DX\TDx.TDxInput.dll</HintPath>
-    </Reference>
+    <None Remove="FreePIE.Core.Contracts.dll" />
+    <None Remove="FreePIE.Core.Plugins.dll" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="3DX\" />
+    <ApplicationDefinition Include="FreePIE.Core.Contracts.dll" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="FreePIE.Core.Contracts">
+      <HintPath>FreePIE.Core.Contracts.dll</HintPath>
+    </Reference>
+    <Reference Include="FreePIE.Core.Plugins">
+      <HintPath>FreePIE.Core.Plugins.dll</HintPath>
+    </Reference>
   </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="HidSharp" Version="2.1.0" />
     <PackageReference Include="System.Numerics.Vectors" Version="4.6.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Page Include="FreePIE.Core.Plugins.dll" />
   </ItemGroup>
 
 </Project>

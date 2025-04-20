@@ -1,20 +1,22 @@
 ﻿
 using FreePIE.Core.Contracts;
+using FreePIE.Core.Plugins.Globals;
 using FreePIE.SpaceMice;
 
 using System;
 using System.Collections.Generic;
-using System.Runtime.InteropServices;
+using System.Linq;
 
 //using TDx.TDxInput;
 
 
-[GlobalType(Type = typeof(TDxPluginGlobal))]
+[GlobalType(Type = typeof(TDxPluginGlobal), IsIndexed = true)]
 public class TDxPlugin : IPlugin
 {
 
-	public SpaceMiceHID device;
+	public List<SpaceMiceHID> devices;
 	protected bool running;
+	public bool Active => running;
 
 	public double x;
 	public double y;
@@ -31,69 +33,78 @@ public class TDxPlugin : IPlugin
 
 	public uint btns;
 
-	protected TDxPluginGlobal tdx;
+	public Dictionary<string, (int vid, int pid, bool enable)> supportedDevices = new Dictionary<string, (int vid, int pid, bool enable)>
+	{
+		{ "SpaceNavigator", (0x046D, 0xC626, true)},
+		{ "SpaceMouse Pro", (0x046D, 0xC62B, true)},
+
+		{ "SpacePilot", (0x046D, 0xC62D, false)},
+		{ "SpaceMouse Wireless", (0x046D, 0xC62A, false)},
+		{ "SpaceMouse Compact", (0x046D, 0xC62C, false)}
+	};
+
+
 	public object CreateGlobal()
 	{
-		tdx = new TDxPluginGlobal(this);
-		device = new SpaceMiceHID();
-		return tdx;
+		// try creating all devices, the ones we don't have should fail silently 
+		devices = new List<SpaceMiceHID>(supportedDevices.Keys.Count);
+		foreach (var device in supportedDevices)
+		{
+			if (!device.Value.enable) continue;
+
+			var d = new SpaceMiceHID()
+			{
+				DeviceName = device.Key,
+
+				VendorId = device.Value.vid,
+				ProductId = device.Value.pid,
+			};
+
+			if (d.Initialize())
+				devices.Add(d);
+		}
+
+
+		return new GlobalIndexer<SpaceMiceHID, int, string>
+		(
+			intIndex => devices.ElementAtOrDefault(intIndex),
+			(strIndex, idx) =>
+			{
+				var device = devices.FirstOrDefault(d => string.Equals(d.DeviceName, strIndex, StringComparison.InvariantCultureIgnoreCase));
+
+				if (device != null) return device;
+				else return devices.ElementAtOrDefault(idx);
+			}
+		);
 	}
 
 	public Action Start()
 	{
-		Connect();
 
-
-		x = y = z = 0;
-		pitch = yaw = roll = 0;
-		btns = 0;
+		foreach (var device in devices)
+		{
+			if (!device.Initialize())
+				Console.WriteLine($"Failed to initialize the {device.DeviceName}.");
+		}
 
 		return null;
 	}
 
-	private void Connect()
-	{
-		if (!device.Initialize(0x046D, 0xC62B))
-		{
-			Console.WriteLine("Failed to initialize the SpaceMouse.");
-			return;
-		}
-		running = true;
-	}
-
-
-	public void Disconnect()
-	{
-		if (device != null)
-		{
-			device.Close();
-			device = null;
-		}
-		running = false;
-	}
-
 	public void Stop()
 	{
-		x = y = z = 0;
-		pitch = yaw = roll = 0;
-		btns = 0;
-
-		try
+		foreach (var device in devices)
 		{
-			Disconnect();
-			GC.Collect();
+			if (device.active)
+				device.Close();
 		}
-		catch (COMException ex)
-		{
-			Console.WriteLine(ex.ToString());
-		}
+		GC.Collect();
 	}
 
 	public event EventHandler Started;
 
 	public string FriendlyName
 	{
-		get { return "3DConnexion SpaceMouse"; }
+		get { return "3DConnexion HID"; }
 	}
 
 	public bool GetProperty(int index, IPluginProperty property)
@@ -108,50 +119,25 @@ public class TDxPlugin : IPlugin
 
 	public void DoBeforeNextExecute()
 	{
-		if (device != null & running)
-		{
-			//device.Update();
-			x = device.x;
-			y = device.y;
-			z = device.z;
-
-			pitch = device.pitch;
-			yaw = device.yaw;
-			roll = device.roll;
-
-			btns = device.btns;
-		}
-		else
-		{
-			x = y = z = 0;
-			pitch = yaw = roll = 0;
-			btns = 0;
-		}
 	}
-
-	internal void OnDispose()
-	{
-		running = false;
-		GC.SuppressFinalize(this);
-	}
-
 
 
 }
 
 
 
-[Global(Name = "spacemouse")]
-public class TDxPluginGlobal : IDisposable
+[Global(Name = "spacemice")]
+public class TDxPluginGlobal
 {
-	private readonly TDxPlugin tdx;
+	private readonly SpaceMiceHID tdx;
 
 
-	public TDxPluginGlobal(TDxPlugin tdx)
+	public TDxPluginGlobal(SpaceMiceHID tdx)
 	{
 		this.tdx = tdx;
 	}
 
+	public string DeviceName => tdx.DeviceName;
 
 	public double x => tdx.x;
 	public double y => tdx.y;
@@ -162,10 +148,6 @@ public class TDxPluginGlobal : IDisposable
 	public double yaw => tdx.yaw;
 	public double roll => tdx.roll;
 
-	public bool getButton(int btn) => (tdx.btns & (1 << btn)) != 0;
+	public bool getButton(int btn) => tdx.getButton(btn);
 
-	void IDisposable.Dispose()
-	{
-		tdx.OnDispose();
-	}
 }

@@ -7,8 +7,12 @@ using System.Threading.Tasks;
 
 namespace FreePIE.SpaceMice
 {
-	public class SpaceMiceHID
+	public class SpaceMiceHID : IDisposable
 	{
+		public int VendorId;
+		public int ProductId;
+		public string DeviceName;
+		public bool active;
 
 		private HidDevice _device;
 		private HidStream _stream;
@@ -25,13 +29,17 @@ namespace FreePIE.SpaceMice
 		// there are up to 4 bytes of buttons on the button report. We pack them into a single uint 32 here
 		public uint btns;
 
-		public bool Initialize(int vendorId, int productId)
+		public bool Initialize()
 		{
 			var deviceList = DeviceList.Local;
-			_device = deviceList.GetHidDevices(vendorId, productId).FirstOrDefault();
+			_device = deviceList.GetHidDevices(VendorId, ProductId).FirstOrDefault();
 
 			if (_device == null)
+			{
+				active = false;
 				return false;
+			}
+
 
 			if (_device.TryOpen(out _stream))
 			{
@@ -50,6 +58,7 @@ namespace FreePIE.SpaceMice
 				});
 			}
 
+			active = _stream != null;
 			return _stream != null;
 		}
 
@@ -117,12 +126,26 @@ namespace FreePIE.SpaceMice
 			}
 		}
 
+		public bool getButton(int btn)
+		{
+			return (btns & (1 << btn)) != 0;
+		}
+
 		public void Close()
 		{
 			_stream?.Dispose();
 			_stream = null;
 			data = null;
+
+			active = false;
 		}
+
+		void IDisposable.Dispose()
+		{
+			Close();
+		}
+
+
 	}
 
 }

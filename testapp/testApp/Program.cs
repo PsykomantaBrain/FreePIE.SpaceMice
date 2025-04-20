@@ -6,7 +6,7 @@ namespace testApp
 	{
 		static void Main(string[] args)
 		{
-			Console.WriteLine("SpaceMouse Test Application");
+			Console.WriteLine("SpaceMice Test Application");
 
 
 			// Create an instance of the SpaceMouseHID class
@@ -21,20 +21,25 @@ namespace testApp
 				//space mouse compact: 0x046D, 0xC62C
 
 
-				SpaceMiceHID device = new SpaceMiceHID();
-				if (!device.Initialize(0x046D, 0xC62B))
+				SpaceMiceHID device = new SpaceMiceHID()
 				{
-					Console.WriteLine("Failed to initialize the SpaceMouse.");
+					VendorId = 0x046D,
+					ProductId = 0xC62B,
+					DeviceName = "SpaceMouse Pro"
+				};
+				if (!device.Initialize())
+				{
+					Console.WriteLine($"Failed to initialize the {device.DeviceName}.");
 					return;
 				}
 
-				Console.WriteLine("SpaceMouse initialized successfully.");
+				Console.WriteLine($"{device.DeviceName} initialized successfully.");
 
 				Loop(device);
 			}
 			catch (Exception ex)
 			{
-				Console.WriteLine($"Error initializing SpaceMouse: {ex.Message}");
+				Console.WriteLine($"Error initializing device: {ex.Message}");
 				return;
 			}
 
@@ -43,7 +48,7 @@ namespace testApp
 		public static void Loop(SpaceMiceHID device)
 		{
 			Console.WriteLine("Press Ctrl+C to stop");
-			Console.WriteLine("SpaceMouse data:");
+			Console.WriteLine($"{device.DeviceName} data:");
 
 			while (true)
 			{
@@ -56,15 +61,6 @@ namespace testApp
 				Console.WriteLine($"Btns: {(Convert.ToString(device.btns, 2).PadLeft(32, '0'))}");
 				Console.SetCursorPosition(0, Console.GetCursorPosition().Top - 2);
 
-
-				//device.Update();
-
-				// Print the values to the console
-				//Console.WriteLine($"X: {device.x}, Y: {device.y}, Z: {device.z}");
-				//Console.WriteLine($"RX: {device.rx}, RY: {device.ry}, RZ: {device.rz}");
-				//Console.WriteLine($"Pitch: {device.pitch}, Yaw: {device.yaw}, Roll: {device.roll}");
-
-				// Add a delay to avoid flooding the console
 				System.Threading.Thread.Sleep(1);
 			}
 		}
