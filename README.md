@@ -17,7 +17,8 @@ Mind however, that buttons will likely be configured in the driver to do somethi
 No easy-to-install method yet. You'll need an IDE to build the solution (Rider, VS or VSCode are all usable, pick your poison)
 
 The FreePIE.SpaceMice.dll (out of /bin after building) file needs to be placed in FreePIE's /Plugins folder (in Program Files/FreePIE/plugins)
-Additionally, the HIDSharp.dll needs to be placed next to FreePIe.exe. (this is part of the HIDSharp nuget package, but the HIDSharp.dll file is included in the repo now, for convenience) 
+Additionally, the HIDSharp.dll needs to be placed next to FreePie.exe. (this is part of the HIDSharp nuget package, but the HIDSharp.dll file is also included in the repo now, for convenience) 
+
 
 After doing this, FreePIE should contain a `spacemouse` class in the code. 
 
