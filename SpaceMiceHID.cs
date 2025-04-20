@@ -29,17 +29,21 @@ namespace FreePIE.SpaceMice
 		// there are up to 4 bytes of buttons on the button report. We pack them into a single uint 32 here
 		public uint btns;
 
-		public bool Initialize()
+		public bool TryGetDevice(out HidDevice device)
 		{
 			var deviceList = DeviceList.Local;
-			_device = deviceList.GetHidDevices(VendorId, ProductId).FirstOrDefault();
+			device = deviceList.GetHidDevices(VendorId, ProductId).FirstOrDefault();
 
-			if (_device == null)
+			return device != null;
+		}
+
+		public bool Initialize()
+		{
+			if (!TryGetDevice(out _device))
 			{
 				active = false;
 				return false;
 			}
-
 
 			if (_device.TryOpen(out _stream))
 			{

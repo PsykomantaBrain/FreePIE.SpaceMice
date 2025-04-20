@@ -15,12 +15,6 @@ namespace testApp
 				//space navigator: 0x046D, 0xC626
 				//space mouse pro: 0x046D, 0xC62B
 
-				// copilot might have been making these up. I don't have these devices to test with.
-				//space pilot: 0x046D, 0xC62D
-				//space mouse wireless: 0x046D, 0xC62A
-				//space mouse compact: 0x046D, 0xC62C
-
-
 				SpaceMiceHID device = new SpaceMiceHID()
 				{
 					VendorId = 0x046D,
