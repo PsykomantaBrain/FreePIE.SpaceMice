@@ -43,6 +43,8 @@ For driving a vJoy device, you can scale the values like this:
 
 For other 3D connection devices, I have added a list of all known 3DConnexion devices to Plugin.cs. It lists all device hardware IDs by name, along with an enable flag. 
 
+![image](https://github.com/user-attachments/assets/ffbcb05b-4401-4cbb-9a10-e14f99e01270)
+
 The plugin will attempt to access all of the enabled devices on the list. To enable an existing device, simply set the enabled flag to true. To add a new device, add a new entry for it in the list. The name on the entry is also the string key for the scripts. (script key lookup is case-insensitive)
 
 I have not tested any other devices than the SpaceMouse Pro and original Space Navigator (wired) at the moment, but I am hoping the data coming out of these things is still formatted the same on the newer models. 
@@ -51,5 +53,7 @@ I have not tested any other devices than the SpaceMouse Pro and original Space N
 # Still pending
 
 The last remaining feature I have pending for this plugin is setting up a FreePIE properties page to configure the devices. For now, you'll need to compile the plugin with the devices you want enabled in the code.
+
+Lastly, support for multiple identical devices is not implemented. This is probably a very unlikely use case (even I'm not crazy enough to own multiple of the same spacemouse model), but it is not technically _impossible_ to support. The device search will grab the first HID device that matches the id, but it should be possible to add them all to the polling list. 
 
 
