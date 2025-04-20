@@ -46,7 +46,7 @@ namespace testApp
 				Console.SetCursorPosition(0, Console.GetCursorPosition().Top - 1);
 
 
-				device.Update();
+				//device.Update();
 
 				// Print the values to the console
 				//Console.WriteLine($"X: {device.x}, Y: {device.y}, Z: {device.z}");

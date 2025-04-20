@@ -2,6 +2,8 @@
 
 using System;
 using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace FreePIE.SpaceMice
 {
@@ -29,9 +31,22 @@ namespace FreePIE.SpaceMice
 			if (_device == null)
 				return false;
 
-			_device.TryOpen(out _stream);
-			_stream.ReadTimeout = 100; // Set a read timeout of 1 second
-			data = new byte[_device.GetMaxInputReportLength()];
+			if (_device.TryOpen(out _stream))
+			{
+				data = new byte[_device.GetMaxInputReportLength()];
+
+				// launch an async task to read the data in a loop
+				Task.Run(() =>
+				{
+					_stream.ReadTimeout = Timeout.Infinite; // Set to infinite timeout to avoid blocking (as long as its on a thread)
+					while (_stream != null)
+					{
+						Update();
+
+						Task.Yield(); // Yield to avoid busy waiting
+					}
+				});
+			}
 
 			return _stream != null;
 		}
@@ -101,6 +116,7 @@ namespace FreePIE.SpaceMice
 		public void Close()
 		{
 			_stream?.Dispose();
+			_stream = null;
 			data = null;
 		}
 	}

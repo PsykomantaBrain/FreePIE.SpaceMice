@@ -107,7 +107,7 @@ public class TDxPlugin : IPlugin
 	{
 		if (device != null & running)
 		{
-			device.Update();
+			//device.Update();
 			x = device.x;
 			y = device.y;
 			z = device.z;
